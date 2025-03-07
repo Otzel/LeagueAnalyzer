@@ -1,29 +1,25 @@
 import requests
-def get_data():
-    api_key = "api_key=RGAPI-df5f3b29-766b-43ad-a2fc-d6f7c1d28ff7"
 
-    # get matchid of last 20 matches
-    getMatchids = "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/Y4jhr6e1vWvF6q6Num4oQEgCvVcBkm7hXobkLh9f3L5LM3l_i8YLzUX80MhAHV6feLdi-G13WcDivw/ids?start=0&count=50&"
-    response = requests.get(getMatchids + api_key)
+API_KEY = "RGAPI-4b63ddb5-2f6a-4239-9f66-085a2c1e061e"  # <-- Replace with your Riot API Key
+PUUID = "Y4jhr6e1vWvF6q6Num4oQEgCvVcBkm7hXobkLh9f3L5LM3l_i8YLzUX80MhAHV6feLdi-G13WcDivw"
+MATCH_HISTORY_URL = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{PUUID}/ids?start=0&count=100&api_key={API_KEY}"
+MATCH_DETAILS_URL = "https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key=" + API_KEY
 
+# --- Function to Fetch Latest Matches ---
+def fetch_latest_games():
+    """Fetch match IDs from Riot API."""
+    response = requests.get(MATCH_HISTORY_URL)
     if response.status_code != 200:
-        print("Error fetching match IDs:", response.status_code)
-        return
+        print(f"Error fetching match IDs: {response.status_code}")
+        return []
+    return response.json()
 
-    matchids = response.json()
 
-    # get match data
-    matches_json = []
-    matches_url = "https://europe.api.riotgames.com/lol/match/v5/matches/"
-
-    for match in matchids:
-        match_response = requests.get(matches_url + match + "?" + api_key)
-
-        if match_response.status_code == 200:
-            match_data = match_response.json()
-            matches_json.append(match_data)
-        else:
-            print(f"Error fetching data for match {match}: {match_response.status_code}")
-
-        #flat_dict = flatten(response.json(),reducer='dot')
-    return matches_json
+# --- Function to Fetch Match Details ---
+def fetch_match_details(match_id):
+    """Fetch match details for a given match ID."""
+    response = requests.get(MATCH_DETAILS_URL.format(match_id))
+    if response.status_code != 200:
+        print(f"Error fetching match {match_id}: {response.status_code}")
+        return None
+    return response.json()

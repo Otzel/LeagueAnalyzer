@@ -1,8 +1,14 @@
-from riotAPI import get_data
-from database import write_json, process_match_data
+from database import update_csv
+import pandas as pd
 
 if __name__ == '__main__':
-    # Fetch JSON data
-    matches_json = get_data()
-    #write_json(matches_json)
-    process_match_data(matches_json)
+    #update_csv()
+    # df = pd.read_csv("match_summary.csv", delimiter=";", encoding="utf-8")
+    #
+    # print(df.info())  # Check if rows exist
+    # print(df.head())  # Show first few rows
+    df = pd.read_csv("match_summary.csv", delimiter=";", encoding="utf-8", skip_blank_lines=True)
+    print(df.info())  # Check if it loads rows now
+    print(df.head())  # Print first few rows
+
+
