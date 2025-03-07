@@ -7,3 +7,5 @@
 /dataSources/
 /dataSources.local.xml
 /venv/
+match_data.json
+match_summary.csv
