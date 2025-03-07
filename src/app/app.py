@@ -2,10 +2,13 @@ import streamlit as st
 import pandas as pd
 import os
 
-from database import update_csv
+from core.database import update_csv
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_FILE = os.path.join(BASE_DIR, "match_summary.csv")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CSV_FILE = os.path.join(DATA_DIR, "match_summary.csv")
+
+os.makedirs(DATA_DIR, exist_ok=True)
 
 @st.cache_data(ttl=0)
 def load_data():

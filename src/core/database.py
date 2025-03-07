@@ -1,10 +1,13 @@
 import csv
 import os
-from riotAPI import fetch_match_details, fetch_latest_games, fetch_puuid
+from core.riotAPI import fetch_match_details, fetch_latest_games, fetch_puuid
 from datetime import datetime
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_FILE = os.path.join(BASE_DIR, "match_summary.csv")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CSV_FILE = os.path.join(DATA_DIR, "match_summary.csv")
+
+os.makedirs(DATA_DIR, exist_ok=True)
 
 def load_existing_csv():
     if os.path.exists(CSV_FILE):
