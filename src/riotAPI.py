@@ -1,25 +1,39 @@
 import requests
 
-MATCH_HISTORY_URL_PART1 = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/"
-MATCH_HISTORY_URL_PART2 = "/ids?start=0&count=100&api_key="
-MATCH_DETAILS_URL_PART1 = "https://europe.api.riotgames.com/lol/match/v5/matches/{}?api_key="
+BASE_URL = "https://europe.api.riotgames.com"
+PUUID_URL = f"{BASE_URL}/riot/account/v1/accounts/by-riot-id/{{}}/{{}}?api_key={{}}"
+MATCH_HISTORY_URL = f"{BASE_URL}/lol/match/v5/matches/by-puuid/{{}}/ids?start=0&count=100&api_key={{}}"
+MATCH_DETAILS_URL = f"{BASE_URL}/lol/match/v5/matches/{{}}?api_key={{}}"
 
 
-# --- Function to Fetch Latest Matches ---
-def fetch_latest_games(puuid, api_key):
-    """Fetch match IDs from Riot API."""
-    response = requests.get(MATCH_HISTORY_URL_PART1 + puuid + MATCH_HISTORY_URL_PART2 + api_key)
+def fetch_puuid(game_name, tag_line, api_key):
+    url = PUUID_URL.format(game_name, tag_line, api_key)
+    response = requests.get(url)
+
     if response.status_code != 200:
-        print(f"Error fetching match IDs: {response.status_code}")
+        print(f"⚠️ Error fetching PUUID ({response.status_code}): {response.text}")
+        return None
+
+    return response.json().get('puuid')
+
+
+def fetch_latest_games(puuid, api_key, count=100):
+    url = MATCH_HISTORY_URL.format(puuid, api_key).replace("count=100", f"count={count}")
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        print(f"⚠️ Error fetching match IDs ({response.status_code}): {response.text}")
         return []
+
     return response.json()
 
 
-# --- Function to Fetch Match Details ---
 def fetch_match_details(match_id, api_key):
-    """Fetch match details for a given match ID."""
-    response = requests.get(MATCH_DETAILS_URL_PART1.format(match_id) + api_key)
+    url = MATCH_DETAILS_URL.format(match_id, api_key)
+    response = requests.get(url)
+
     if response.status_code != 200:
-        print(f"Error fetching match {match_id}: {response.status_code}")
+        print(f"⚠️ Error fetching match {match_id} ({response.status_code}): {response.text}")
         return None
+
     return response.json()
