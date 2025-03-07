@@ -1,6 +1,4 @@
 import requests
-from flatten_dict import flatten
-
 def get_data():
     api_key = "api_key=RGAPI-df5f3b29-766b-43ad-a2fc-d6f7c1d28ff7"
 
