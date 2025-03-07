@@ -27,9 +27,13 @@ df = load_data()
 # Title
 st.title("League of Legends Match Tracker")
 
+st.write("## Please enter your PUUID and your API-Key")
+puuid = st.text_area("Enter your PUUID")
+api_key = st.text_area("Enter your API-Key")
+
 # --- REFRESH BUTTON ---
 if st.button("🔄 Refresh Data"):
-    update_csv()  # Calls the function to update the CSV
+    update_csv(puuid, api_key)  # Calls the function to update the CSV
     st.success("✅ Data refreshed! Reloading...")
     st.rerun()  # Force Streamlit to reload the page and display updated data
 

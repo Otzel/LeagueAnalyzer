@@ -5,8 +5,6 @@ from datetime import datetime
 
 # --- CONFIGURATION ---
 CSV_FILE = "match_summary.csv"
-PUUID = "Y4jhr6e1vWvF6q6Num4oQEgCvVcBkm7hXobkLh9f3L5LM3l_i8YLzUX80MhAHV6feLdi-G13WcDivw"
-
 
 # --- Function to Load Existing CSV ---
 def load_existing_csv():
@@ -20,7 +18,7 @@ def load_existing_csv():
     return []
 
 # --- Function to Extract Relevant Data ---
-def extract_match_data(match_json):
+def extract_match_data(match_json, puuid):
     """Extract required data from a match JSON."""
     match_id = match_json["metadata"]["matchId"]
     game_creation = match_json["info"]["gameCreation"]
@@ -33,7 +31,7 @@ def extract_match_data(match_json):
     game_length = f"{game_duration // 60}:{game_duration % 60:02d}"
 
     # Find Lah's match data
-    lah_data = next((p for p in match_json["info"]["participants"] if p["puuid"] == PUUID), None)
+    lah_data = next((p for p in match_json["info"]["participants"] if p["puuid"] == puuid), None)
     if not lah_data:
         print(f"Lah's data not found in match {match_id}")
         return None
@@ -60,13 +58,13 @@ def extract_match_data(match_json):
 
 
 # --- Function to Update CSV ---
-def update_csv():
+def update_csv(puuid, api_key):
     """Main function to update the CSV with new games."""
     existing_data = load_existing_csv()
     existing_match_ids = {row[0] for row in existing_data}  # Get stored match IDs
 
     # Fetch latest matches
-    latest_matches = fetch_latest_games()
+    latest_matches = fetch_latest_games(puuid, api_key)
     if not latest_matches:
         print("No new matches found.")
         return
@@ -81,9 +79,9 @@ def update_csv():
 
     new_rows = []
     for match_id in new_match_ids:
-        match_json = fetch_match_details(match_id)
+        match_json = fetch_match_details(match_id, api_key)
         if match_json:
-            extracted_data = extract_match_data(match_json)
+            extracted_data = extract_match_data(match_json, puuid)
             if extracted_data:
                 new_rows.append(extracted_data)
 
