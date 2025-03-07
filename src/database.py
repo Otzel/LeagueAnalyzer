@@ -4,7 +4,8 @@ from riotAPI import fetch_match_details, fetch_latest_games
 from datetime import datetime
 
 # --- CONFIGURATION ---
-CSV_FILE = "match_summary.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_FILE = os.path.join(BASE_DIR, "match_summary.csv")
 
 # --- Function to Load Existing CSV ---
 def load_existing_csv():
