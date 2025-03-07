@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
+from database import update_csv
+
 # Load or create CSV file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Get the script's directory
 CSV_FILE = os.path.join(BASE_DIR, "match_summary.csv")
@@ -15,7 +17,7 @@ def load_data():
         print("⚠️ CSV file not found! Creating an empty DataFrame.")
         return pd.DataFrame(columns=["MatchID", "Date", "Time", "Game Duration", "Win/Loss",
                                      "Champion (Lah)", "Lane Opponent Champion", "CS/min (Lah)",
-                                     "Kills", "Deaths", "Assists", "Comment"])
+                                     "Kills", "Deaths", "Assists", "Comment about Lane Opponent", "Comment about Macro"])
 
     # If file exists, read it
     return pd.read_csv(CSV_FILE, delimiter=";", encoding="utf-8", skip_blank_lines=True)
@@ -24,6 +26,12 @@ df = load_data()
 
 # Title
 st.title("League of Legends Match Tracker")
+
+# --- REFRESH BUTTON ---
+if st.button("🔄 Refresh Data"):
+    update_csv()  # Calls the function to update the CSV
+    st.success("✅ Data refreshed! Reloading...")
+    st.rerun()  # Force Streamlit to reload the page and display updated data
 
 # --- SEARCH FUNCTION ---
 st.sidebar.header("Search Matches")
@@ -44,30 +52,33 @@ if search_win != "All":
 st.write("### Match History")
 st.dataframe(filtered_df)
 
-# --- STATISTICS & CHARTS ---
-st.write("### Performance Trends")
-
-# Calculate KDA over time
-df["KDA"] = (df["Kills"] + df["Assists"]) / df["Deaths"].replace(0, 1)  # Avoid division by zero
-
-fig, ax = plt.subplots()
-ax.plot(df["Date"], df["KDA"], marker='o', label="KDA")
-ax.plot(df["Date"], df["CS/min (Lah)"], marker='x', label="CS/min")
-ax.set_xlabel("Date")
-ax.set_ylabel("Value")
-ax.set_title("KDA & CS/min Trends")
-ax.legend()
-plt.xticks(rotation=45)
-
-st.pyplot(fig)
+# # --- STATISTICS & CHARTS ---
+# st.write("### Performance Trends")
+#
+# # Calculate KDA over time
+# df["KDA"] = (df["Kills"] + df["Assists"]) / df["Deaths"].replace(0, 1)  # Avoid division by zero
+#
+# fig, ax = plt.subplots()
+# ax.plot(df["Date"], df["KDA"], marker='o', label="KDA")
+# ax.plot(df["Date"], df["CS/min (Lah)"], marker='x', label="CS/min")
+# ax.set_xlabel("Date")
+# ax.set_ylabel("Value")
+# ax.set_title("KDA & CS/min Trends")
+# ax.legend()
+# plt.xticks(rotation=45)
+#
+# st.pyplot(fig)
 
 # --- ADD NEW NOTES ---
 st.write("### Add Notes")
 selected_match = st.selectbox("Select MatchID", df["MatchID"])
-new_note = st.text_area("Enter your note")
+new_note_opp = st.text_area("Enter your notes about you lane opponent")
+new_note_macro = st.text_area("Enter your notes about you Macro")
 
-if st.button("Save Note"):
-    df.loc[df["MatchID"] == selected_match, "Comment"] = new_note
+
+if st.button("Save Notes"):
+    df.loc[df["MatchID"] == selected_match, "Comment about Lane Opponent"] = new_note_opp
+    df.loc[df["MatchID"] == selected_match, "Comment about Macro"] = new_note_macro
     df.to_csv(CSV_FILE, sep=";", index=False)
     st.success("Note saved!")
     st.rerun()  # Refresh UI after saving

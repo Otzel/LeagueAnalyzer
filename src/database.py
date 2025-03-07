@@ -101,7 +101,7 @@ def update_csv():
         if not file_exists:
             writer.writerow(["MatchID", "Date", "Time", "Game Duration", "Win/Loss",
                              "Champion (Lah)", "Lane Opponent Champion", "CS/min (Lah)",
-                             "Kills", "Deaths", "Assists", "Comment"])
+                             "Kills", "Deaths", "Assists", "Comment about Lane Opponent", "Comment about Macro"])
 
         # Append new rows
         writer.writerows(new_rows)
