@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 
-from core.database import fetch_all_matches
+from core.database import fetch_all_matches, update_notes_in_db
 from core.dataHandler import update_database
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,14 +37,20 @@ df = load_data()
 st.title("League of Legends Match Tracker")
 
 st.write("## Please enter your PUUID and your API-Key")
-game_name = st.text_area("Enter your Game Name")
-tag_line = st.text_area("Enter your Tag Line")
-api_key = st.text_area("Enter your API-Key")
 
-if st.button("🔄 Refresh Data"):
-    update_database(game_name, tag_line, api_key)
-    st.success("✅ Data refreshed! Reloading...")
-    st.rerun()
+col1, col2, col3 = st.columns([1, 1, 2])
+
+with col1:
+    game_name = st.text_input("Game Name", max_chars=16)
+
+with col2:
+    tag_line = st.text_input("Tag Line", max_chars=8)
+
+with col3:
+    api_key = st.text_input("API Key", type="password", max_chars=40)
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.button("🔄 Refresh Data", use_container_width=True, on_click=lambda: [update_database(game_name, tag_line, api_key), st.rerun()])
 
 st.sidebar.header("Search Matches")
 search_champ = st.sidebar.text_input("Champion")
@@ -87,9 +93,7 @@ new_note_macro = st.text_area("Enter your notes about you Macro")
 
 
 if st.button("Save Notes"):
-    df.loc[df["MatchID"] == selected_match, "Comment about Lane Opponent"] = new_note_opp
-    df.loc[df["MatchID"] == selected_match, "Comment about Macro"] = new_note_macro
-    df.to_csv(CSV_FILE, sep=";", index=False)
-    st.success("Note saved!")
+    update_notes_in_db(selected_match, new_note_opp, new_note_macro)
+    st.success("✅ Notes saved to database!")
     st.rerun()
 

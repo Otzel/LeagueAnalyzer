@@ -58,3 +58,13 @@ def fetch_match_by_id(match_id):
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM match_summary WHERE MatchID = ?", (match_id,))
         return cursor.fetchone()
+
+def update_notes_in_db(match_id, note_lane, note_macro):
+    with sqlite3.connect(DB_FILE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE match_summary 
+            SET Comment_Lane = ?, Comment_Macro = ? 
+            WHERE MatchID = ?
+        ''', (note_lane, note_macro, match_id))
+        conn.commit()
