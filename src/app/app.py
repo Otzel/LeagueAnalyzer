@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import os
 
-from core.database import update_csv
+from core.database import fetch_all_matches
+from core.dataHandler import update_database
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -12,13 +13,24 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 @st.cache_data(ttl=0)
 def load_data():
-    if not os.path.exists(CSV_FILE):
-        print("⚠️ CSV file not found! Creating an empty DataFrame.")
-        return pd.DataFrame(columns=["MatchID", "Date", "Time", "Game Duration", "Win/Loss",
-                                     "Champion (Lah)", "Lane Opponent Champion", "CS/min (Lah)",
-                                     "Kills", "Deaths", "Assists", "Comment about Lane Opponent", "Comment about Macro"])
+    matches = fetch_all_matches()
 
-    return pd.read_csv(CSV_FILE, delimiter=";", encoding="utf-8", skip_blank_lines=True)
+    columns = ["MatchID", "Date", "Time", "Duration", "Win", "Champion",
+               "Lane_Opponent", "CS_per_min", "Kills", "Deaths", "Assists",
+               "Comment_Lane", "Comment_Macro"]
+
+    df = pd.DataFrame(matches, columns=columns)
+
+    df["Win/Loss"] = df["Win"].map({1: "Win", 0: "Loss"})
+
+    df.drop(columns=["Win"], inplace=True)
+
+    df["Date"] = pd.to_datetime(df["Date"], format="%Y-%m-%d")
+    df["Time"] = pd.to_datetime(df["Time"], format="%H:%M:%S").dt.time
+
+    df = df.sort_values(by=["Date", "Time"], ascending=[False, False])
+
+    return df
 
 df = load_data()
 
@@ -30,7 +42,7 @@ tag_line = st.text_area("Enter your Tag Line")
 api_key = st.text_area("Enter your API-Key")
 
 if st.button("🔄 Refresh Data"):
-    update_csv(game_name, tag_line, api_key)
+    update_database(game_name, tag_line, api_key)
     st.success("✅ Data refreshed! Reloading...")
     st.rerun()
 
