@@ -41,13 +41,13 @@ st.write("## Please enter your PUUID and your API-Key")
 col1, col2, col3 = st.columns([1, 1, 2])
 
 with col1:
-    game_name = st.text_input("Game Name", max_chars=16)
+    game_name = st.text_input("Game Name", max_chars=64)
 
 with col2:
     tag_line = st.text_input("Tag Line", max_chars=8)
 
 with col3:
-    api_key = st.text_input("API Key", type="password", max_chars=40)
+    api_key = st.text_input("API Key", type="password", max_chars=60)
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.button("🔄 Refresh Data", use_container_width=True, on_click=lambda: [update_database(game_name, tag_line, api_key), st.rerun()])
