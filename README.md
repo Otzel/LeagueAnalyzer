@@ -22,6 +22,7 @@ LeagueAnalyzer is a **League of Legends match tracker** that fetches, stores, an
   python --version
   ```
 - If Python is not installed, download it from [python.org](https://www.python.org/downloads/) and install it.
+- Make sure to tick the `Add python.exe to PATH` box
 
 #### **Mac**:
 
@@ -51,7 +52,7 @@ sudo apt install python3 python3-pip
 ### **2️⃣ Download LeagueAnalyzer**
 
 #### **Option 1: If You Have Git Installed**
-
+- Can be installed with [**Git Documentation**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - Open a terminal (**Command Prompt**, **PowerShell**, or **Terminal**) and run:
   ```bash
   git clone https://github.com/Otzel/LeagueAnalyzer.git
@@ -60,7 +61,7 @@ sudo apt install python3 python3-pip
 
 #### **Option 2: If You DON'T Have Git Installed**
 
-- **Go to the **[**LeagueAnalyzer GitHub Page**](https://github.com/Otzel/LeagueAnalyzer)
+- Go to the [**LeagueAnalyzer GitHub Page**](https://github.com/Otzel/LeagueAnalyzer)
 - Click **"Code" → "Download ZIP"**
 - Extract the ZIP file
 - Open **Command Prompt/Terminal** and navigate to the extracted folder:
