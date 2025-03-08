@@ -11,6 +11,9 @@ LeagueAnalyzer is a **League of Legends match tracker** that fetches, stores, an
 
 ---
 
+# Important
+To use this application you need a API-key for the Riot-API. You can create and access one here [**Riot-api**](https://developer.riotgames.com/apis). After logging in you can create and find your key in the dashboard of your profile. 
+
 ## 🚀 **Installation Guide**
 
 ### **1️⃣ Install Python (If Not Already Installed)**
@@ -167,6 +170,4 @@ If you find issues or want to contribute, open a GitHub issue or fork the repo!
 
 ---
 
-💡 **Now, anyone can use LeagueAnalyzer easily with just a few commands!** 🎯\
-Let me know if you need any tweaks! 😊
 
