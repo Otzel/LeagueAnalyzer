@@ -2,3 +2,4 @@
 /src/match_summary.csv
 .idea/
 matches.db
+.python-version

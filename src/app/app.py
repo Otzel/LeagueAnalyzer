@@ -60,9 +60,9 @@ search_win = st.sidebar.selectbox("Win/Loss", ["All", "Win", "Loss"])
 filtered_df = df.copy()
 
 if search_champ:
-    filtered_df = filtered_df[filtered_df["Champion (Lah)"].str.contains(search_champ, case=False, na=False)]
+    filtered_df = filtered_df[filtered_df["Champion"].str.contains(search_champ, case=False, na=False)]
 if search_opponent:
-    filtered_df = filtered_df[filtered_df["Lane Opponent Champion"].str.contains(search_opponent, case=False, na=False)]
+    filtered_df = filtered_df[filtered_df["Lane_Opponent"].str.contains(search_opponent, case=False, na=False)]
 if search_win != "All":
     filtered_df = filtered_df[filtered_df["Win/Loss"] == search_win]
 
