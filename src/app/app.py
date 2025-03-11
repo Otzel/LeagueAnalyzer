@@ -79,9 +79,19 @@ with tab1:
     st.dataframe(filtered_df[selected_columns])
 
     st.write("### Add Notes")
+
+    # Create a dictionary mapping MatchID to comments
+    match_comments = {row["MatchID"]: (row["Comment_Lane"], row["Comment_Macro"]) for _, row in df.iterrows()}
+
+    # Select MatchID
     selected_match = st.selectbox("Select MatchID", df["MatchID"])
-    new_note_opp = st.text_area("Enter your notes about your lane opponent")
-    new_note_macro = st.text_area("Enter your notes about your Macro")
+
+    # Get existing comments (default to empty if no comment exists)
+    existing_comment_lane, existing_comment_macro = match_comments.get(selected_match, ("", ""))
+
+    # Pre-fill text boxes with existing comments
+    new_note_opp = st.text_area("Enter your notes about your lane opponent", value=existing_comment_lane)
+    new_note_macro = st.text_area("Enter your notes about your Macro", value=existing_comment_macro)
 
     if st.button("Save Notes"):
         update_notes_in_db(selected_match, new_note_opp, new_note_macro)
