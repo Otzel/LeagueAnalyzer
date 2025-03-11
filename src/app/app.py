@@ -11,6 +11,8 @@ CSV_FILE = os.path.join(DATA_DIR, "match_summary.csv")
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
+default_columns = ["MatchID", "Date", "Time", "Champion", "Lane_Opponent", "Win/Loss", "CS_per_min", "Kills", "Deaths", "Assists"]
+
 @st.cache_data(ttl=0)
 def load_data():
     matches = fetch_all_matches()
@@ -65,6 +67,15 @@ if search_opponent:
     filtered_df = filtered_df[filtered_df["Lane_Opponent"].str.contains(search_opponent, case=False, na=False)]
 if search_win != "All":
     filtered_df = filtered_df[filtered_df["Win/Loss"] == search_win]
+
+# Column selection
+available_columns = df.columns.tolist()
+default_columns = ["MatchID", "Date", "Time", "Champion", "Lane_Opponent", "Win/Loss", "CS_per_min", "Kills", "Deaths", "Assists"]
+selected_columns = st.multiselect("Select columns to display", available_columns, default=default_columns)
+
+# Display filtered table with selected columns
+st.write("### Match History")
+st.dataframe(filtered_df[selected_columns])
 
 st.write("### Match History")
 st.dataframe(filtered_df)
